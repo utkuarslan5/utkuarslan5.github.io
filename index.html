@@ -10,9 +10,10 @@
         theme: {
           extend: {
             colors: {
-              primary: "#111111",
-              secondary: "#F5F5F5",
-              accent: "#2979FF",
+              primary: "#0B1026",
+              secondary: "#F5F4FF",
+              accent: "#7C3AED",
+              pulse: "#00C9A7",
             },
             fontFamily: {
               inter: ['"Inter"', "system-ui", "sans-serif"],
@@ -21,378 +22,1141 @@
         },
       };
     </script>
+    <style>
+      :root {
+        --grid-color: rgba(11, 16, 38, 0.07);
+        --glow: 124, 58, 237;
+      }
+
+      body {
+        min-height: 100vh;
+        background: radial-gradient(circle at 10% 15%, rgba(124, 58, 237, 0.13), transparent 40%),
+          radial-gradient(circle at 85% 0%, rgba(6, 182, 212, 0.12), transparent 45%),
+          #f9fbff;
+        overflow-x: hidden;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' fill-opacity='0.16'%3E%3Cpath d='M2 2h2v2H2z' fill='%230b1026'/%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.35;
+        z-index: 0;
+        mix-blend-mode: multiply;
+      }
+
+      .hyper-grid {
+        position: fixed;
+        inset: -200px;
+        pointer-events: none;
+        background-image: linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+          linear-gradient(0deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 180px 180px;
+        z-index: 0;
+        mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.45), transparent 70%);
+      }
+
+      .plasma {
+        position: fixed;
+        width: clamp(16rem, 28vw, 28rem);
+        height: clamp(16rem, 28vw, 28rem);
+        filter: blur(40px);
+        opacity: 0.45;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: 999px;
+        animation: drift 28s ease-in-out infinite;
+      }
+
+      .plasma--one {
+        top: -6rem;
+        left: -5rem;
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.5), transparent 65%);
+      }
+
+      .plasma--two {
+        right: -8rem;
+        bottom: 15%;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.45), transparent 65%);
+        animation-duration: 32s;
+      }
+
+      .section-chrome {
+        position: relative;
+        border-radius: 32px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: linear-gradient(125deg, rgba(255, 255, 255, 0.95), rgba(246, 247, 255, 0.9));
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+        padding: clamp(1.5rem, 2vw, 2.75rem);
+        overflow: hidden;
+      }
+
+      .section-chrome::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: 30px;
+        border: 1px solid rgba(124, 58, 237, 0.08);
+        pointer-events: none;
+      }
+
+      .section-chrome::after {
+        content: "";
+        position: absolute;
+        inset: auto auto 0 0;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle, rgba(var(--glow), 0.15), transparent 60%);
+        filter: blur(10px);
+        transform: translate(40%, 40%);
+        pointer-events: none;
+      }
+
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+        transition: opacity 0.65s ease, transform 0.65s ease;
+      }
+
+      [data-reveal].visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      [data-tilt] {
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+        will-change: transform;
+        transform-style: preserve-3d;
+      }
+
+      #scroll-indicator {
+        transition: transform 0.2s ease-out;
+      }
+
+      @keyframes drift {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(4%, -5%, 0) scale(1.05);
+        }
+        100% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .plasma {
+          animation: none;
+        }
+        [data-reveal] {
+          transition-duration: 0.01s;
+        }
+      }
+    </style>
   </head>
-  <body class="bg-secondary font-inter text-primary">
-    <header class="sticky top-0 z-50 border-b border-black/5 bg-secondary/90 backdrop-blur">
-      <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+  <body class="relative bg-secondary font-inter text-primary">
+    <div class="hyper-grid" aria-hidden="true"></div>
+    <div class="plasma plasma--one" aria-hidden="true"></div>
+    <div class="plasma plasma--two" aria-hidden="true"></div>
+    <div id="scroll-indicator" class="fixed left-0 top-0 z-50 h-1 w-full origin-left scale-x-0 bg-gradient-to-r from-accent via-pulse to-sky-400"></div>
+
+    <header class="sticky top-0 z-40 px-4 pt-4">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 rounded-[26px] border border-black/10 bg-white/80 px-4 py-4 shadow-[0_15px_35px_rgba(15,23,42,0.12)] backdrop-blur-lg sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-3">
-          <span class="inline-flex h-3 w-3 rounded-full bg-accent shadow-[0_0_12px_rgba(41,121,255,0.6)]"></span>
-          <span class="text-xs font-semibold tracking-[0.35em]">UTKU ARSLAN</span>
+          <span class="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/20 bg-white">
+            <span class="absolute inset-0 animate-ping rounded-2xl bg-accent/10"></span>
+            <span class="relative inline-flex h-3 w-3 rounded-full bg-accent shadow-[0_0_20px_rgba(124,58,237,0.9)]"></span>
+          </span>
+          <div>
+            <p class="text-xs font-semibold tracking-[0.4em]">UTKU ARSLAN</p>
+            <p class="text-[0.6rem] font-medium tracking-[0.35em] text-black/50">SYSTEMS · AI</p>
+          </div>
         </div>
-        <nav class="flex flex-wrap gap-5 text-sm text-black/70" aria-label="Primary">
-          <a class="hover:text-accent" href="#about">About</a>
-          <a class="hover:text-accent" href="#experience">Experience</a>
-          <a class="hover:text-accent" href="#projects">Projects</a>
-          <a class="hover:text-accent" href="#research">Research</a>
-          <a class="hover:text-accent" href="#skills">Skills</a>
-          <a class="hover:text-accent" href="#contact">Contact</a>
+        <nav class="flex flex-wrap justify-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-black/60" aria-label="Primary">
+          <a class="rounded-full border border-black/10 px-4 py-1 transition hover:border-accent hover:bg-white" href="#about">About</a>
+          <a class="rounded-full border border-black/10 px-4 py-1 transition hover:border-accent hover:bg-white" href="#experience">Experience</a>
+          <a class="rounded-full border border-black/10 px-4 py-1 transition hover:border-accent hover:bg-white" href="#projects">Projects</a>
+          <a class="rounded-full border border-black/10 px-4 py-1 transition hover:border-accent hover:bg-white" href="#research">Research</a>
+          <a class="rounded-full border border-black/10 px-4 py-1 transition hover:border-accent hover:bg-white" href="#skills">Skills</a>
+          <a class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent via-purple-500 to-sky-400 px-5 py-1 text-white shadow-lg transition hover:-translate-y-0.5" href="#contact">
+            Contact
+            <span class="h-1.5 w-1.5 rounded-full bg-white/80"></span>
+          </a>
         </nav>
       </div>
     </header>
 
-    <style>
-      .fade-up {
-        opacity: 0;
-        transform: translateY(12px);
-        transition: opacity 0.45s ease-out, transform 0.45s ease-out;
-      }
-
-      .fade-up.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    </style>
-
-    <main class="mx-auto w-full max-w-4xl px-4 pb-20 pt-16 sm:pt-24">
-      <section class="space-y-8 text-center">
-        <div class="space-y-4">
-          <p class="text-xs font-semibold uppercase tracking-[0.4em] text-accent">Systems &amp; AI Engineering</p>
-          <h1 class="text-4xl font-semibold leading-tight text-primary sm:text-5xl">I build intelligent systems that connect biology, robotics, and large-scale AI.</h1>
-          <p class="mx-auto max-w-3xl text-lg text-black/70">
-            From immune-cell modeling at Johnson &amp; Johnson to LLM-driven automation at Eurosis, I design end-to-end solutions that blend rigorous models with usable tools.
-          </p>
-        </div>
-        <div class="flex flex-wrap justify-center gap-3">
-          <a href="#projects" class="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow hover:-translate-y-0.5 hover:bg-[#1E63DD] transition">
-            View Work
-          </a>
-          <a href="/Utku Arslan Resume.pdf" class="rounded-full border border-black/10 px-6 py-2.5 text-sm font-medium text-primary hover:border-black/40 transition">Download CV</a>
-        </div>
-        <div class="flex justify-center gap-3">
-          <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://github.com/utkuarslan5" aria-label="GitHub" target="_blank" rel="noopener">
-            <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path
-                d="M12 .5C5.65.5.5 5.65.5 12c0 5.11 3.3 9.44 7.88 10.97.58.11.8-.25.8-.56v-2c-3.2.69-3.87-1.37-3.87-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.18.08 1.81 1.2 1.81 1.2 1.05 1.8 2.75 1.28 3.42.98.1-.76.41-1.28.75-1.57-2.55-.29-5.23-1.28-5.23-5.67 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.47.11-3.06 0 0 .99-.32 3.25 1.18A11.3 11.3 0 0 1 12 6.43c1 .01 2.01.14 2.95.4 2.26-1.5 3.24-1.18 3.24-1.18.64 1.59.24 2.77.12 3.06.74.8 1.19 1.83 1.19 3.08 0 4.4-2.69 5.37-5.25 5.66.42.36.8 1.07.8 2.16v3.2c0 .31.22.68.81.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"
-              />
-            </svg>
-          </a>
-          <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.linkedin.com/in/utkuarslan5" aria-label="LinkedIn" target="_blank" rel="noopener">
-            <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path
-                d="M20.45 20.45h-3.55v-5.58c0-1.33-.02-3.05-1.86-3.05-1.87 0-2.16 1.46-2.16 2.95v5.68H9.33V9h3.4v1.56h.05c.47-.89 1.62-1.82 3.33-1.82 3.56 0 4.22 2.34 4.22 5.38v6.33ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z"
-              />
-            </svg>
-          </a>
-          <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.researchgate.net/profile/Utku-Arslan-6" aria-label="ResearchGate" target="_blank" rel="noopener">
-            <img class="h-5 w-5 object-contain group-hover:opacity-80" src="img/research_gate.png" alt="" loading="lazy" />
-          </a>
-          <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.kaggle.com/kingpinguin5" aria-label="Kaggle" target="_blank" rel="noopener">
-            <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M6.3 5.6v13.6H8.5v-6.03L14 19.2h2.86l-6.07-6.57 6.1-7.03H14.1l-4.8 5.6V5.6z" />
-            </svg>
-          </a>
-        </div>
-      </section>
-
-      
-
-      <section id="about" class="mt-20 space-y-6 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">01 · About</p>
-          <h2 class="text-3xl font-semibold">Blending conceptual depth with field deployment.</h2>
-        </div>
-        <p class="text-black/75">
-          I work across bioprocess modeling, genomics, robotics, climate resilience, and LLM systems. I enjoy moving from first-principles models to shipped software that helps teams make better decisions.
-        </p>
-        <section class="mt-8">
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div class="fade-up rounded-2xl border border-black/10 bg-white/70 p-5 shadow" data-reveal>
-            <p class="text-xs font-semibold text-black/60">Systems Impact</p>
-            <p class="mt-2 text-xl font-semibold tracking-tight text-primary">5+ industries</p>
-            <p class="text-sm text-black/60">Biotech, robotics, climate resilience, and AI consulting.</p>
-          </div>
-          <div class="fade-up rounded-2xl border border-black/10 bg-white/70 p-5 shadow" data-reveal>
-            <p class="text-xs font-semibold text-black/60">Time horizons</p>
-            <p class="mt-2 text-xl font-semibold tracking-tight text-primary">60+ days</p>
-            <p class="text-sm text-black/60">From bioprocess forecasting to LLM pilots.</p>
-          </div>
-          <div class="fade-up rounded-2xl border border-black/10 bg-white/70 p-5 shadow" data-reveal>
-            <p class="text-xs font-semibold text-black/60">Signal focus</p>
-            <p class="mt-2 text-xl font-semibold tracking-tight text-primary">Meaning &amp; adaptation</p>
-            <p class="text-sm text-black/60">Projects that reveal how systems make sense of change.</p>
-          </div>
-        </div>
-      </section>
-      </section>
-
-      <section id="experience" class="mt-20 space-y-8 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">02 · Experience</p>
-          <h2 class="text-3xl font-semibold">Recent roles</h2>
-        </div>
-        <div class="space-y-6">
-          <article class="rounded-2xl border-l-4 border-accent bg-white/80 p-6 shadow">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="text-xl font-semibold">Data Scientist · Eurosis Consulting</h3>
-                <p class="text-sm text-black/60">Sep 2024 – Present · Remote</p>
-                <p class="mt-1 text-sm text-black/70">Designing predictive tooling for consulting teams.</p>
+    <main class="relative z-10 mx-auto w-full max-w-6xl px-4 pb-32 pt-20 sm:pt-28">
+      <section id="about" class="section-chrome" data-reveal>
+        <div class="absolute -top-16 right-12 hidden h-40 w-40 rounded-full bg-gradient-to-r from-accent/30 to-pulse/30 blur-3xl sm:block"></div>
+        <div class="grid gap-10 lg:grid-cols-[1.2fr,0.9fr]">
+          <div class="space-y-8">
+            <div class="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+              <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(124,58,237,0.8)]"></span>
+              Systems &amp; AI Engineering
+            </div>
+            <h1 class="text-4xl font-semibold leading-tight text-primary sm:text-[2.8rem]">
+              I build <span class="bg-gradient-to-r from-accent to-indigo-500 bg-clip-text text-transparent">intelligent systems</span> that connect biology, robotics, and large-scale AI.
+            </h1>
+            <p class="text-lg text-black/70">From immune-cell modeling at Johnson &amp; Johnson to LLM-driven automation at Eurosis, I design end-to-end solutions that blend rigorous models with usable tools.</p>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex flex-wrap gap-3">
+                <a href="#projects" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent via-purple-500 to-sky-400 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5">
+                  <div class="flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-black/50">
+                <span class="inline-flex h-2 w-2 animate-pulse rounded-full bg-pulse shadow-[0_0_10px_rgba(0,201,167,0.8)]"></span>
+                  Book a Call
               </div>
-              <div class="ml-auto flex items-center">
-                <a href="https://www.eurosisconsulting.com/" target="_blank" rel="noopener" aria-label="Eurosis Consulting">
-                <img class="h-10 w-auto object-contain" src="img/eurosis.png" alt="" loading="lazy" />
+                </a>
+                <a href="/Utku Arslan Resume.pdf" class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-6 py-3 text-sm font-semibold text-primary shadow-sm transition hover:border-accent">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14"></path>
+                    <path d="m19 12-7 7-7-7"></path>
+                    <path d="M5 19h14"></path>
+                  </svg>
+                  Download CV
                 </a>
               </div>
+              
             </div>
-            <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
-              <li>Design predictive models and optimization workflows across industries.</li>
-              <li>Build ML + LLM automation around RACI/APQC frameworks.</li>
-              <li>Own both engineering execution and high-level data strategy.</li>
-            </ul>
-          </article>
 
-          <article class="rounded-2xl border-l-4 border-accent bg-white/80 p-6 shadow">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="text-xl font-semibold">Head of AI · Poiesy (Biotech)</h3>
-                <p class="text-sm text-black/60">Oct 2023 – Jan 2024 · Netherlands · Hybrid</p>
-                <p class="mt-1 text-sm text-black/70">Rapid genomic modeling for bone marrow transplant outcomes.</p>
-              </div>
-              <div class="ml-auto flex items-center">
-                <img class="h-16 w-auto object-contain" src="img/poisey.png" alt="Poiesy logo" loading="lazy" />
-              </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-black/45">Signals</p>
+              <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://github.com/utkuarslan5" aria-label="GitHub" target="_blank" rel="noopener">
+                <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 .5C5.65.5.5 5.65.5 12c0 5.11 3.3 9.44 7.88 10.97.58.11.8-.25.8-.56v-2c-3.2.69-3.87-1.37-3.87-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.18.08 1.81 1.2 1.81 1.2 1.05 1.8 2.75 1.28 3.42.98.1-.76.41-1.28.75-1.57-2.55-.29-5.23-1.28-5.23-5.67 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.47.11-3.06 0 0 .99-.32 3.25 1.18A11.3 11.3 0 0 1 12 6.43c1 .01 2.01.14 2.95.4 2.26-1.5 3.24-1.18 3.24-1.18.64 1.59.24 2.77.12 3.06.74.8 1.19 1.83 1.19 3.08 0 4.4-2.69 5.37-5.25 5.66.42.36.8 1.07.8 2.16v3.2c0 .31.22.68.81.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"
+                  />
+                </svg>
+              </a>
+              <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.linkedin.com/in/utkuarslan5" aria-label="LinkedIn" target="_blank" rel="noopener">
+                <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M20.45 20.45h-3.55v-5.58c0-1.33-.02-3.05-1.86-3.05-1.87 0-2.16 1.46-2.16 2.95v5.68H9.33V9h3.4v1.56h.05c.47-.89 1.62-1.82 3.33-1.82 3.56 0 4.22 2.34 4.22 5.38v6.33ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z"
+                  />
+                </svg>
+              </a>
+              <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.researchgate.net/profile/Utku-Arslan-6" aria-label="ResearchGate" target="_blank" rel="noopener">
+                <img class="h-5 w-5 object-contain group-hover:opacity-80" src="img/research_gate.png" alt="" loading="lazy" />
+              </a>
+              <a class="group rounded-full border border-black/10 p-2 hover:border-accent" href="https://www.kaggle.com/kingpinguin5" aria-label="Kaggle" target="_blank" rel="noopener">
+                <svg class="h-5 w-5 text-primary group-hover:text-accent" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M6.3 5.6v13.6H8.5v-6.03L14 19.2h2.86l-6.07-6.57 6.1-7.03H14.1l-4.8 5.6V5.6z" />
+                </svg>
+              </a>
             </div>
-            <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
-              <li>Built a genomic + clinical pipeline reaching ~83% accuracy within one week.</li>
-              <li>Managed high-dimensional biomarkers and rapid validation sprints.</li>
-              <li>Guided early product and research strategy.</li>
-            </ul>
-          </article>
+          </div>
+          
+      </section>
+      <section id="about" class="section-chrome mt-16" data-reveal><div class="space-y-6">
+              <div class="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                <span class="h-2 w-2 rounded-full bg-accent"></span>
+                01 · About
+              </div>
+               <div class="grid gap-4 text-center sm:grid-cols-3">
+                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+                  <div class="flex flex-col items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7v5l3 2"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Years</p>
+                      <p class="text-3xl font-semibold text-primary">6+</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+                  <div class="flex flex-col items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 13 3 9l9-6 9 6-2 4"></path>
+                        <path d="m9 21-6-8h18l-6 8-3-4-3 4z"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Systems shipped</p>
+                      <p class="text-3xl font-semibold text-primary">20+</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+                  <div class="flex flex-col items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 21a6 6 0 0 0-12 0"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M22 21a6 6 0 0 0-4-5.65"></path>
+                        <path d="M20 8a4 4 0 0 0-3-3.87"></path>
+                        <path d="M6 15.35A6 6 0 0 0 2 21"></path>
+                        <path d="M7 4.13A4 4 0 0 0 4 8"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Teams enabled</p>
+                      <p class="text-3xl font-semibold text-primary">8</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-2 text-sm text-black/70">I work across bioprocess modeling, genomics, robotics, climate resilience, and LLM systems. I move from first-principles models to shipped software that helps teams make better decisions.</p>
+             
+            
+              </section>
+      <section id="experience" class="section-chrome mt-16" data-reveal>
+        <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                  02 · Experience
+                  
+                </div>
+                               <p class="text-black/70">I’ve built AI teams, deployed ML infra, and translated research into production-ready systems.</p>
 
-          <article class="rounded-2xl border-l-4 border-accent bg-white/80 p-6 shadow">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="text-xl font-semibold">Machine Learning Developer · Johnson &amp; Johnson</h3>
-                <p class="text-sm text-black/60">Aug 2022 – Jul 2023 · Leiden, NL</p>
-                <p class="mt-1 text-sm text-black/70">Scientific ML for immune cell growth forecasting.</p>
               </div>
-              <div class="ml-auto flex items-center">
-                <a href="https://www.jnj.com" target="_blank" rel="noopener" aria-label="Johnson &amp; Johnson">
-                  <img class="h-12 w-auto object-contain" src="img/jnj.png" alt="" loading="lazy" />
-                </a>
-              </div>
-            </div>
-            <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
-              <li>Developed RNN models for 60-day bioprocesses with ~92% accuracy.</li>
-              <li>Implemented PyTorch latent-variable approximations of hidden states.</li>
-              <li>Collaborated with biologists &amp; physicists; presented results internally.</li>
-            </ul>
-          </article>
 
-          <article class="rounded-2xl border-l-4 border-accent bg-white/80 p-6 shadow">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="text-xl font-semibold">Research Assistant · SwarmLab</h3>
-                <p class="text-sm text-black/60">Aug 2021 – Mar 2022 · Maastricht, NL</p>
-                <p class="mt-1 text-sm text-black/70">Gesture-driven autonomy with multi-drone swarms.</p>
-              </div>
-              <div class="ml-auto flex items-center">
-                <a
-                  href="https://www.maastrichtuniversity.nl/research/cognitive-robotics-and-complex-self-organising-systems-swarmlab"
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="SwarmLab"
-                >
-                <img class="h-10 w-auto object-contain" src="img/swarmlab.png" alt="" loading="lazy" />
-                </a>
-              </div>
-            </div>
-            <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
-              <li>Led interactive flight, rescue, and robotic arm experiments.</li>
-              <li>Built a three-drone system controlled via gestures with CV.</li>
-              <li>Worked on obstacle detection, planning, and coordination.</li>
-            </ul>
-          </article>
+            <div class="space-y-6">
+              <article class="group rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.1)] transition" data-tilt>
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 7h20"></path>
+                        <path d="M2 12h20"></path>
+                        <path d="M2 17h20"></path>
+                        <path d="m17 22-5-5-5 5"></path>
+                        <path d="m17 2-5 5-5-5"></path>
+                      </svg>
+                      Present
+                    </div>
+                    <h3 class="mt-3 text-2xl font-semibold">Data Scientist · Eurosis Consulting</h3>
+                    <p class="text-sm text-black/60">Sep 2024 – Present · Remote</p>
+                  </div>
+                  <div class="flex items-center">
+                    <a href="https://www.eurosisconsulting.com/" target="_blank" rel="noopener" aria-label="Eurosis Consulting">
+                      <img class="h-12 w-auto object-contain" src="img/eurosis.png" alt="" loading="lazy" />
+                    </a>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-black/70">Designing predictive tooling and ML+LLM automation for consulting teams, aligning APQC/RACI processes with data products.</p>
+                <div class="mt-4 grid gap-3 text-sm text-black/70 sm:grid-cols-3">
+                  <div class="rounded-2xl border border-black/10 bg-secondary/50 px-3 py-2">
+                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Focus</p>
+                    <p class="font-semibold">Predictive workflows</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-secondary/50 px-3 py-2">
+                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Stack</p>
+                    <p class="font-semibold">LLM + automation</p>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-secondary/50 px-3 py-2">
+                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Scope</p>
+                    <p class="font-semibold">Strategy &amp; build</p>
+                  </div>
+                </div>
+                <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
+                  <li>Design cross-industry predictive models &amp; optimization workflows.</li>
+                  <li>Automate RACI/APQC deliverables using ML + LLM stacks.</li>
+                  <li>Own both execution and long-term data strategy.</li>
+                </ul>
+              </article>
 
-          <article class="rounded-2xl border-l-4 border-accent bg-white/80 p-6 shadow">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="text-xl font-semibold">IT Project Consultant · UNU-MERIT</h3>
-                <p class="text-sm text-black/60">Sep 2021 – Feb 2022 · Maastricht, NL</p>
-                <p class="mt-1 text-sm text-black/70">Systems consulting for climate resilience.</p>
-              </div>
-              <div class="ml-auto flex items-center">
-                <a href="https://www.merit.unu.edu" target="_blank" rel="noopener" aria-label="UNU-MERIT">
-                <img class="h-16 w-auto object-contain" src="img/unu-merit.png" alt="" loading="lazy" />
-                </a>
-              </div>
+              <article class="rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.08)] transition md:flex md:flex-row md:items-center md:justify-between" data-tilt>
+                <div class="space-y-2">
+                  <div class="inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black/60">Biotech</div>
+                  <h3 class="text-xl font-semibold">Head of AI · Poiesy</h3>
+                  <p class="text-sm text-black/60">Oct 2023 – Jan 2024 · Netherlands · Hybrid</p>
+                  <p class="text-sm text-black/70">Rapid genomic modeling for bone marrow transplant outcomes.</p>
+                  <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Genomics</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Survival modeling</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Biomarkers</span>
+                  </div>
+                  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-black/70">
+                    <li>Reached ~83% accuracy in week-one pipeline.</li>
+                    <li>Managed high-dimensional biomarkers + validation sprints.</li>
+                    <li>Guided early product &amp; research strategy.</li>
+                  </ul>
+                </div>
+                <div class="flex items-center justify-center">
+                  <img class="h-20 w-auto object-contain" src="img/poisey.png" alt="Poiesy logo" loading="lazy" />
+                </div>
+              </article>
+
+              <article class="rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.08)] transition md:flex md:flex-row md:items-center md:justify-between" data-tilt>
+                <div class="space-y-2">
+                  <div class="inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black/60">Bioprocess</div>
+                  <h3 class="text-xl font-semibold">Machine Learning Developer · Johnson &amp; Johnson</h3>
+                  <p class="text-sm text-black/60">Aug 2022 – Jul 2023 · Leiden, NL</p>
+                  <p class="text-sm text-black/70">Scientific ML for immune cell growth forecasting.</p>
+                  <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">RNNs</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Latent variables</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">GMP reporting</span>
+                  </div>
+                  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-black/70">
+                    <li>Developed 60-day bioprocess RNNs reaching ~92% accuracy.</li>
+                    <li>Implemented PyTorch latent-variable approximations.</li>
+                    <li>Collaborated with biologists &amp; physicists; demoed internally.</li>
+                  </ul>
+                </div>
+                <div class="flex items-center justify-center">
+                  <a href="https://www.jnj.com" target="_blank" rel="noopener" aria-label="Johnson &amp; Johnson">
+                    <img class="h-12 w-auto object-contain" src="img/jnj.png" alt="" loading="lazy" />
+                  </a>
+                </div>
+              </article>
+
+              <article class="rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.08)] transition md:flex md:flex-row md:items-center md:justify-between" data-tilt>
+                <div class="space-y-2">
+                  <div class="inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black/60">Robotics</div>
+                  <h3 class="text-xl font-semibold">Research Assistant · SwarmLab</h3>
+                  <p class="text-sm text-black/60">Aug 2021 – Mar 2022 · Maastricht, NL</p>
+                  <p class="text-sm text-black/70">Gesture-driven autonomy with multi-drone swarms.</p>
+                  <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Gesture control</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Multi-agent</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">CV</span>
+                  </div>
+                  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-black/70">
+                    <li>Led interactive flight, rescue, and robotic arm experiments.</li>
+                    <li>Built a three-drone gesture-controlled system.</li>
+                    <li>Worked on obstacle detection, planning, coordination.</li>
+                  </ul>
+                </div>
+                <div class="flex items-center justify-center">
+                  <a
+                    href="https://www.maastrichtuniversity.nl/research/cognitive-robotics-and-complex-self-organising-systems-swarmlab"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="SwarmLab"
+                  >
+                    <img class="h-12 w-auto object-contain" src="img/swarmlab.png" alt="SwarmLab logo" loading="lazy" />
+                  </a>
+                </div>
+              </article>
+
+              <article class="rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.08)] transition md:flex md:flex-row md:items-center md:justify-between" data-tilt>
+                <div class="space-y-2">
+                  <div class="inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black/60">Climate</div>
+                  <h3 class="text-xl font-semibold">IT Project Consultant · UNU-MERIT</h3>
+                  <p class="text-sm text-black/60">Sep 2021 – Feb 2022 · Maastricht, NL</p>
+                  <p class="text-sm text-black/70">Systems consulting for climate resilience.</p>
+                  <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">ArcGIS</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Platform design</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Vendor strategy</span>
+                  </div>
+                  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-black/70">
+                    <li>Co-designed community resilience platform backed by ArcGIS.</li>
+                    <li>Surveyed AI/data stacks and supported vendor decisions.</li>
+                    <li>Projected to reduce relief costs by 10–15%.</li>
+                  </ul>
+                </div>
+                <div class="flex items-center justify-center">
+                  <a href="https://www.merit.unu.edu" target="_blank" rel="noopener" aria-label="UNU-MERIT">
+                    <img class="h-16 w-auto object-contain" src="img/unu-merit.png" alt="" loading="lazy" />
+                  </a>
+                </div>
+              </article>
             </div>
-            <ul class="mt-4 list-disc space-y-1 pl-6 text-sm text-black/70">
-              <li>Co-designed a community resilience platform now backed by ArcGIS.</li>
-              <li>Surveyed AI/data stacks and supported vendor decisions.</li>
-              <li>Platform projected to reduce relief costs by 10–15%.</li>
-            </ul>
-          </article>
+          </div>
         </div>
       </section>
 
-      <section id="projects" class="mt-20 space-y-8 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">03 · Projects</p>
-          <h2 class="text-3xl font-semibold">Selected work</h2>
-        </div>
-        <div class="grid gap-5 md:grid-cols-2">
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Immune Cell Growth Modeling</h3>
-            <p class="text-sm text-black/60">Johnson &amp; Johnson · Time-series ML</p>
-            <p class="mt-3 text-sm text-black/70">
-              RNNs and latent-variable models for 60-day bioreactors, forecasting IgG production with ~92% accuracy.
-            </p>
-            <div class="mt-4 flex flex-wrap gap-2 text-xs text-black/70">
-              <span class="chip">RNNs</span><span class="chip">Bioprocess</span><span class="chip">PyTorch</span>
+      <section id="projects" class="section-chrome mt-16" data-reveal>
+        <div class="space-y-10">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                  03 · Projects
+                </div>
+                <p class="text-black/70">Scalable experiments and production-grade tools—from immune-cell forecasting to multi-agent control dashboards.</p>
+              </div>
+              <div class="flex flex-wrap gap-2 text-xs font-medium text-black/60">
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 6v6l4 2"></path>
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                  Full-stack R&amp;D
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 6h13"></path>
+                    <path d="M8 12h13"></path>
+                    <path d="M8 18h13"></path>
+                    <path d="M3 6h.01"></path>
+                    <path d="M3 12h.01"></path>
+                    <path d="M3 18h.01"></path>
+                  </svg>
+                  Prototyping
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20v-6"></path>
+                    <path d="M18 20V10"></path>
+                    <path d="M6 20V4"></path>
+                  </svg>
+                  Systems thinking
+                </span>
+              </div>
             </div>
-          </article>
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Genomic Prediction of BMT Success</h3>
-            <p class="text-sm text-black/60">Poiesy · Biomedical ML</p>
-            <p class="mt-3 text-sm text-black/70">Pipeline predicting transplant success from genomic + clinical features, delivering ~83% accuracy within a week.</p>
-            <div class="mt-4 flex flex-wrap gap-2 text-xs text-black/70">
-              <span class="chip">Genomics</span><span class="chip">Survival modeling</span><span class="chip">Rapid prototyping</span>
+        
+              
+            <div class="grid gap-6 lg:grid-cols-2">
+              <article class="lg:col-span-2 rounded-3xl border border-black/10 bg-white p-6 shadow-xl">
+                <div class="flex flex-col gap-6 lg:flex-row">
+                  <div class="flex-1">
+                    <div class="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v7"></path>
+                        <path d="m15 6-3 3-3-3"></path>
+                        <path d="M12 22v-7"></path>
+                        <path d="m9 18 3-3 3 3"></path>
+                        <path d="M3 12h7"></path>
+                        <path d="m6 15 3-3-3-3"></path>
+                        <path d="m21 12-7 .01"></path>
+                        <path d="m18 9-3 3 3 3"></path>
+                      </svg>
+                      Flagship
+                    </div>
+                    <h3 class="mt-3 text-2xl font-semibold">Immune Cell Growth Modeling</h3>
+                    <p class="mt-1 text-sm text-black/60">Johnson &amp; Johnson · Time-series ML</p>
+                    <p class="mt-4 text-sm text-black/70">60-day IgG forecasting via RNNs + latent-variable modeling, pairing PyTorch experimentation with GMP-aligned reporting pipelines.</p>
+                    <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                      <span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1">RNNs</span>
+                      <span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1">Bioprocess</span>
+                      <span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1">PyTorch</span>
+                      <span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1">Reporting automation</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-1 flex-col justify-between rounded-2xl border border-black/5 bg-secondary/60 p-5">
+                    <div class="space-y-3 text-sm text-black/70">
+                      <div class="flex items-center gap-2">
+                        <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 4h16v4H4z"></path>
+                          <path d="M4 12h16v8H4z"></path>
+                        </svg>
+                        IgG accuracy ~92% across 60-day runs
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 20v-6"></path>
+                          <path d="M6 20V4"></path>
+                          <path d="M18 20v-8"></path>
+                        </svg>
+                        Latent-variable structure for hidden biomarkers
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 18h.01"></path>
+                          <path d="M12 18h.01"></path>
+                          <path d="M16 18h.01"></path>
+                          <path d="M21 12a9 9 0 1 0-18 0c0 3 1 5 3 6h12c2-1 3-3 3-6Z"></path>
+                        </svg>
+                        Automated dashboards for scientists + execs
+                      </div>
+                    </div>
+                    <p class="mt-4 text-xs uppercase tracking-[0.3em] text-black/45">Outcomes: SME verified + in production  </p>
+                  </div>
+                </div>
+              </article>
+              <article class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 7 10 17l-5-5"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-semibold">Genomic Prediction of BMT Success</h3>
+                    <p class="text-sm text-black/60">Poiesy · Biomedical ML</p>
+                  </div>
+                </div>
+                <p class="mt-4 text-sm text-black/70">Rapid genomic + clinical pipeline predicting bone marrow transplant outcomes (~83% accuracy) within week-one sprints.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Genomics</span>
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Survival modeling</span>
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Rapid prototyping</span>
+                </div>
+              </article>
+              <article class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 3h18v6H3z"></path>
+                      <path d="M3 13h18v8H3z"></path>
+                      <path d="m7 13 5 8 5-8"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-semibold">HouseScrape</h3>
+                    <p class="text-sm text-black/60">Data engineering · Scraping</p>
+                  </div>
+                </div>
+                <p class="mt-4 text-sm text-black/70">Distributed scrapers + API to normalize Dutch housing data; supports custom filters and export-ready dashboards.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/housescrape" target="_blank" rel="noopener">
+                    Frontend
+                  </a>
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/housescrape-backend" target="_blank" rel="noopener">
+                    Backend
+                  </a>
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/funda-scraper" target="_blank" rel="noopener">
+                    Funda
+                  </a>
+                </div>
+              </article>
+              <article class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m9 18 6-6-6-6"></path>
+                      <path d="M5 6h4"></path>
+                      <path d="M15 18h4"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-semibold">The Recommenders</h3>
+                    <p class="text-sm text-black/60">Music recommendation engine</p>
+                  </div>
+                </div>
+                <p class="mt-4 text-sm text-black/70">Million Song Dataset pipeline combining collaborative signals with playlist-aware embeddings; published as a conference paper.</p>
+                <div class="mt-4 text-sm">
+                  <a class="inline-flex items-center gap-1 text-accent hover:underline" href="https://github.com/utkuarslan5/the_recommenders" target="_blank" rel="noopener">
+                    GitHub
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17 17 7"></path>
+                      <path d="M7 7h10v10"></path>
+                    </svg>
+                  </a>
+                </div>
+              </article>
+              <article class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h6l2 3h8v11H4z"></path>
+                      <path d="m14 13-3-3 3-3"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-semibold">SwarmBee</h3>
+                    <p class="text-sm text-black/60">Interactive drone swarm</p>
+                  </div>
+                </div>
+                <p class="mt-4 text-sm text-black/70">Gesture-controlled drones for human-swarm experiments; includes perception stack, safety overrides, and expressive motion primitives.</p>
+                <div class="mt-4 text-sm">
+                  <a class="inline-flex items-center gap-1 text-accent hover:underline" href="https://github.com/utkuarslan5/SwarmBee" target="_blank" rel="noopener">
+                    GitHub
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17 17 7"></path>
+                      <path d="M7 7h10v10"></path>
+                    </svg>
+                  </a>
+                </div>
+              </article>
+              <article class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 3h12"></path>
+                      <path d="M6 9h12"></path>
+                      <path d="M6 15h12"></path>
+                      <path d="M6 21h12"></path>
+                      <path d="m6 9 6 6 6-6"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 class="text-lg font-semibold">LLM Systems &amp; Agents</h3>
+                    <p class="text-sm text-black/60">LangChain · Automation</p>
+                  </div>
+                </div>
+                <p class="mt-4 text-sm text-black/70">Hands-on explorations of RAG chat, embeddings, websocket automations, and evaluator harnesses for production LLM agents.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-black/70">
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/langchain-experiments" target="_blank" rel="noopener">LangChain</a>
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/hands-on-llms" target="_blank" rel="noopener">hands-on-llms</a>
+                  <a class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-secondary px-3 py-1 text-accent hover:underline" href="https://github.com/utkuarslan5/llm_websocket" target="_blank" rel="noopener">llm_websocket</a>
+                </div>
+              </article>
             </div>
-          </article>
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">HouseScrape</h3>
-            <p class="text-sm text-black/60">Data engineering · Scraping</p>
-            <p class="mt-3 text-sm text-black/70">Scraping + API infrastructure for Dutch housing data, enabling filters and analytics-ready exports.</p>
-            <p class="mt-4 text-sm text-black/60">
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/housescrape" target="_blank" rel="noopener">frontend</a> ·
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/housescrape-backend" target="_blank" rel="noopener">backend</a> ·
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/funda-scraper" target="_blank" rel="noopener">Funda</a>
-            </p>
-          </article>
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">The Recommenders</h3>
-            <p class="text-sm text-black/60">Music recommendation engine</p>
-            <p class="mt-3 text-sm text-black/70">Playlist-based recommendation pipeline on the Million Song Dataset; published as a conference paper.</p>
-            <p class="mt-4 text-sm text-black/60">
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/the_recommenders" target="_blank" rel="noopener">GitHub</a>
-            </p>
-          </article>
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">SwarmBee</h3>
-            <p class="text-sm text-black/60">Interactive drone swarm</p>
-            <p class="mt-3 text-sm text-black/70">Gesture-controlled autonomous drones for human-swarm interaction research.</p>
-            <p class="mt-4 text-sm text-black/60">
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/SwarmBee" target="_blank" rel="noopener">GitHub</a>
-            </p>
-          </article>
-          <article class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">LLM Systems &amp; Agents</h3>
-            <p class="text-sm text-black/60">LangChain · Automation</p>
-            <p class="mt-3 text-sm text-black/70">Experiments covering RAG chat, embeddings, and websocket-based automations.</p>
-            <p class="mt-4 text-sm text-black/60">
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/langchain-experiments" target="_blank" rel="noopener">LangChain</a> ·
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/hands-on-llms" target="_blank" rel="noopener">hands-on-llms</a> ·
-              <a class="text-accent hover:underline" href="https://github.com/utkuarslan5/llm_websocket" target="_blank" rel="noopener">llm_websocket</a>
-            </p>
-          </article>
+          </div>
         </div>
       </section>
 
-      <section id="research" class="mt-20 space-y-8 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">04 · Research</p>
-          <h2 class="text-3xl font-semibold">Writing &amp; publications</h2>
-        </div>
-        <div class="space-y-4">
-          <div class="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white/80 p-4 shadow sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold">The Observer-Dependence of MeaninFg</h3>
-              <p class="text-sm text-black/60">Conceptual article</p>
-              <p class="text-sm text-black/70">Quantum-inspired formalism treating meaning as observer-dependent collapse.</p>
+      <section id="research" class="section-chrome mt-16" data-reveal>
+        <div class="grid gap-10 lg:grid-cols-[1.05fr_1.25fr]">
+            <div class="space-y-6">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                  04 · Research
+                </div>
+              
+                <p class="text-black/70">Formal papers, conceptual essays, and experimental notes exploring complex systems, recommender theory, and human-swarm interaction.</p>
+              </div>
+              
+              <div class="rounded-2xl border border-black/10 bg-white p-6 shadow-lg">
+                <div class="flex items-center gap-3">
+                  <span class="inline-flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M12 2v8"></path>
+                      <path d="m9 7 3 3 3-3"></path>
+                      <path d="M12 22v-8"></path>
+                      <path d="m15 17-3-3-3 3"></path>
+                      <path d="M2 12h8"></path>
+                      <path d="m7 9 3 3-3 3"></path>
+                      <path d="M22 12h-8"></path>
+                      <path d="m17 15-3-3 3-3"></path>
+                    </svg>
+                    Featured
+                  </span>
+                  <p class="inline-flex items-center gap-2 text-sm text-black/50">
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M6 2h12"></path>
+                      <path d="M6 6h9"></path>
+                      <path d="M6 10h12"></path>
+                      <path d="M6 14h9"></path>
+                      <path d="M6 18h12"></path>
+                    </svg>
+                    Conceptual article
+                  </p>
+                </div>
+                <h3 class="mt-4 text-2xl font-semibold">The Observer-Dependence of Meaning</h3>
+                <p class="mt-3 text-sm text-black/70">Quantum-inspired treatment of semantic collapse—modeling “meaning” as a measurement event with observer-specific priors.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-black/70">
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Complex systems</span>
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Semiotics</span>
+                  <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Formal methods</span>
+                </div>
+                <div class="mt-5 flex flex-wrap items-center gap-4 text-sm">
+                  <a class="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 font-semibold text-white shadow hover:-translate-y-0.5 transition" href="https://drive.google.com/file/d/1IZIR_4v_jE8DzkzZ6vUj-Y8Qxg8zpfzb/view?usp=sharing" target="_blank" rel="noopener">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M12 5v14"></path>
+                      <path d="m18 13-6 6-6-6"></path>
+                    </svg>
+                    Read article
+                  </a>
+                  
+                </div>
+              </div>
             </div>
-            <a class="text-sm font-semibold text-accent hover:underline" href="https://drive.google.com/file/d/1IZIR_4v_jE8DzkzZ6vUj-Y8Qxg8zpfzb/view?usp=sharing" target="_blank" rel="noopener">Read</a>
-          </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white/80 p-4 shadow sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold">The Recommenders</h3>
-              <p class="text-sm text-black/60">Project paper</p>
-              <p class="text-sm text-black/70">Playlist-based recommendation strategies on the Million Song Dataset.</p>
+            <div class="relative pl-8">
+              <div class="absolute left-4 top-4 bottom-4 w-px bg-gradient-to-b from-accent/40 via-black/10 to-transparent"></div>
+              <div class="space-y-4">
+                <article class="relative flex gap-4 rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <span class="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 19.5V5a2 2 0 0 1 2-2h6"></path>
+                      <path d="M20 22V7l-6-4H6"></path>
+                      <path d="M12 3v5h6"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-semibold">The Recommenders</h3>
+                      <span class="inline-flex items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-xs font-semibold text-accent">
+                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                        Project Paper
+                      </span>
+                    </div>
+                    <p class="mt-1 flex items-center gap-2 text-sm text-black/60">
+                      <svg class="h-4 w-4 text-black/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                        <path d="M16 2v4"></path>
+                        <path d="M8 2v4"></path>
+                        <path d="M3 10h18"></path>
+                      </svg>
+                      Conference paper · 2023
+                    </p>
+                    <p class="mt-2 text-sm text-black/70">Playlist-driven recommendation strategies on the Million Song Dataset.</p>
+                    <a class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262857_The_Recommenders_Recommendations_based_on_Music_Playlists" target="_blank" rel="noopener">
+                      View publication
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 17 17 7"></path>
+                        <path d="M7 7h10v10"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+                <article class="relative flex gap-4 rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <span class="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 4h16v6H4z"></path>
+                      <path d="m2 10 3 3"></path>
+                      <path d="m22 10-3 3"></path>
+                      <path d="M6 19h12"></path>
+                      <path d="m9 13 3 6 3-6"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-semibold">An Interactive Swarm of Drones</h3>
+                      <span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-xs font-semibold text-black/60">
+                        <svg class="h-3 w-3 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M6 3v12"></path>
+                          <path d="M18 3v12"></path>
+                          <path d="M2 9h20"></path>
+                          <path d="m14 15-2 6"></path>
+                          <path d="m10 15 2 6"></path>
+                        </svg>
+                        Findings
+                      </span>
+                    </div>
+                    <p class="mt-1 flex items-center gap-2 text-sm text-black/60">
+                      <svg class="h-4 w-4 text-black/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 22h14"></path>
+                        <path d="M10 2h4"></path>
+                        <path d="M12 2v20"></path>
+                      </svg>
+                      SwarmLab · 2022
+                    </p>
+                    <p class="mt-2 text-sm text-black/70">Gesture-driven control protocols enabling expressive human-swarm interaction.</p>
+                    <a class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262867_An_Interactive_Swarm_of_Drones" target="_blank" rel="noopener">
+                      View study
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 17 17 7"></path>
+                        <path d="M7 7h10v10"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+                <article class="relative flex gap-4 rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <span class="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M20 7 12 4 4 7"></path>
+                      <path d="m4 17 8 3 8-3"></path>
+                      <path d="M4 7v10"></path>
+                      <path d="M20 7v10"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-semibold">Multi-Agent Surveillance</h3>
+                      <span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-xs font-semibold text-black/60">
+                        <svg class="h-3 w-3 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <circle cx="12" cy="12" r="3"></circle>
+                          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+                        </svg>
+                        Research
+                      </span>
+                    </div>
+                    <p class="mt-1 flex items-center gap-2 text-sm text-black/60">
+                      <svg class="h-4 w-4 text-black/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 3h18v18H3z"></path>
+                        <path d="M3 9h18"></path>
+                        <path d="M9 21V9"></path>
+                      </svg>
+                      Patrol coordination · 2021
+                    </p>
+                    <p class="mt-2 text-sm text-black/70">Optimization of coverage strategies using distributed negotiation protocols.</p>
+                    <a class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262947_Multi-Agent_Surveillance" target="_blank" rel="noopener">
+                      View project
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 17 17 7"></path>
+                        <path d="M7 7h10v10"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+                <article class="relative flex gap-4 rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <span class="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                      <path d="M3 9h18"></path>
+                      <path d="m9 3 6 18"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-semibold">Play It!: Abalone Strategy</h3>
+                      <span class="inline-flex items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-xs font-semibold text-accent">
+                        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M4 3h16"></path>
+                          <path d="M4 7h16"></path>
+                          <path d="M6 11h12v10H6Z"></path>
+                        </svg>
+                        Preprint
+                      </span>
+                    </div>
+                    <p class="mt-1 flex items-center gap-2 text-sm text-black/60">
+                      <svg class="h-4 w-4 text-black/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 3h18v4H3z"></path>
+                        <path d="M3 7h18v14H3z"></path>
+                      </svg>
+                      Computational analysis · 2020
+                    </p>
+                    <p class="mt-2 text-sm text-black/70">Evaluating search heuristics and decision policies within the Abalone strategy game.</p>
+                    <a class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262865_Play_it_An_investigation_into_strategy_game_Abalone" target="_blank" rel="noopener">
+                      View preprint
+                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 17 17 7"></path>
+                        <path d="M7 7h10v10"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+              </div>
             </div>
-            <a class="text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262857_The_Recommenders_Recommendations_based_on_Music_Playlists" target="_blank" rel="noopener">Link</a>
-          </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white/80 p-4 shadow sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold">An Interactive Swarm of Drones</h3>
-              <p class="text-sm text-black/60">Experimental findings</p>
-              <p class="text-sm text-black/70">Human-swarm interaction via gesture control.</p>
-            </div>
-            <a class="text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262867_An_Interactive_Swarm_of_Drones" target="_blank" rel="noopener">Link</a>
-          </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white/80 p-4 shadow sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold">Multi-Agent Surveillance</h3>
-              <p class="text-sm text-black/60">Research project</p>
-              <p class="text-sm text-black/70">Coordination strategies for patrol coverage.</p>
-            </div>
-            <a class="text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262947_Multi-Agent_Surveillance" target="_blank" rel="noopener">Link</a>
-          </div>
-          <div class="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white/80 p-4 shadow sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 class="text-lg font-semibold">Play It!: Abalone Strategy</h3>
-              <p class="text-sm text-black/60">Preprint</p>
-              <p class="text-sm text-black/70">Computational analysis of decision-making in Abalone.</p>
-            </div>
-            <a class="text-sm font-semibold text-accent hover:underline" href="https://www.researchgate.net/publication/378262865_Play_it_An_investigation_into_strategy_game_Abalone" target="_blank" rel="noopener">Link</a>
           </div>
         </div>
       </section>
 
-      <section id="skills" class="mt-20 space-y-8 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">05 · Skills</p>
-          <h2 class="text-3xl font-semibold">Core capabilities</h2>
-        </div>
-        <div class="grid gap-6 md:grid-cols-2">
-          <div class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Machine Learning &amp; AI</h3>
-            <p class="mt-3 text-sm text-black/70">PyTorch, scikit-learn, LightGBM, AutoGluon, Optuna, RNNs, embeddings, recommender systems.</p>
-          </div>
-          <div class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Domains</h3>
-            <p class="mt-3 text-sm text-black/70">Bioprocess modeling, genomics, biomedical prediction, multi-agent robotics, computer vision, complex systems, LLM applications.</p>
-          </div>
-          <div class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Software &amp; Infrastructure</h3>
-            <p class="mt-3 text-sm text-black/70">Python, TypeScript, React, React Flow, Docker, Git, Linux/WSL2, REST APIs.</p>
-          </div>
-          <div class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow">
-            <h3 class="text-lg font-semibold">Data &amp; Analysis</h3>
-            <p class="mt-3 text-sm text-black/70">pandas, NumPy, exploratory data analysis, visualization, data preprocessing, automation.</p>
-          </div>
-          <div class="rounded-2xl border border-black/10 bg-white/80 p-5 shadow md:col-span-2">
-            <h3 class="text-lg font-semibold">Other</h3>
-            <p class="mt-3 text-sm text-black/70">Process mining, organizational modeling, financial markets, writing in the sciences, learning strategies.</p>
+      <section id="skills" class="section-chrome mt-16" data-reveal>
+        <div class="flex flex-col gap-10 lg:flex-row">
+            <div class="flex-1 space-y-6">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                  05 · Skills
+                </div>
+                <h2 class="text-3xl font-semibold">Core capabilities</h2>
+                <p class="text-black/70">Pragmatic ML generalist: I design experiments, ship tooling, and keep the human stakeholders looped in. These are the stacks I reach for most.</p>
+              </div>
+             
+              <div class="flex flex-wrap gap-2 text-sm font-medium text-primary/90">
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18"></path>
+                    <path d="m4.5 9 7.5 7 7.5-7"></path>
+                  </svg>
+                  LLM agents
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z"></path>
+                    <path d="m12 12 8-4.5"></path>
+                    <path d="M12 12v9"></path>
+                    <path d="m12 12-8-4.5"></path>
+                  </svg>
+                  Scientific modeling
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                  </svg>
+                  Data apps
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 10h6"></path>
+                    <path d="M13 10h6"></path>
+                    <path d="M5 14h10"></path>
+                    <path d="m15 14 4 4"></path>
+                    <path d="M5 6h14"></path>
+                  </svg>
+                  Automation
+                </span>
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="m7 12 2 2 4-4 4 4"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.2em] text-black/50">Modeling</p>
+                      <h3 class="text-lg font-semibold">Machine Learning &amp; AI</h3>
+                    </div>
+                  </div>
+                  <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-black/80">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">PyTorch</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">scikit-learn</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">AutoGluon</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">LightGBM</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Optuna</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">RNNs</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Recsys</span>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 10a6 6 0 0 1 12 0c0 4-6 10-6 10s-6-6-6-10Z"></path>
+                        <circle cx="12" cy="10" r="2"></circle>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.2em] text-black/50">Domains</p>
+                      <h3 class="text-lg font-semibold">Applied research</h3>
+                    </div>
+                  </div>
+                  <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-black/80">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Genomics</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Bioprocess</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Multi-agent robotics</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Vision</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">LLM apps</span>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow sm:col-span-2" data-tilt>
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 2 22 6 12 16 8 12z"></path>
+                        <path d="M7 7 3 11 13 21 17 17"></path>
+                        <path d="m14 19 2 2 4-4-2-2"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.2em] text-black/50">Delivery</p>
+                      <h3 class="text-lg font-semibold">Software &amp; Data</h3>
+                    </div>
+                  </div>
+                  <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-black/80">
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Python</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">TypeScript</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">React</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">React Flow</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Docker</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Git</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Linux/WSL2</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">REST APIs</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">EDA</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Visualization</span>
+                    <span class="rounded-full border border-black/10 bg-secondary px-3 py-1">Automation</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="contact" class="mt-20 space-y-6 border-t border-black/10 pt-12">
-        <div class="space-y-2">
-          <p class="text-xs tracking-[0.4em] text-accent">06 · Contact</p>
-          <h2 class="text-3xl font-semibold">Let’s collaborate</h2>
-        </div>
-        <p class="text-black/70">I’m open to collaborations in applied AI, complex systems, research, and technical consulting.</p>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p class="text-xs uppercase tracking-[0.3em] text-black/60">Email</p>
-            <a class="text-lg font-semibold text-accent" href="mailto:utkuvonarslan@gmail.com">utkuvonarslan@gmail.com</a>
-          </div>
-          <div class="flex gap-5 text-sm font-medium">
-            <a class="text-accent hover:underline" href="https://github.com/utkuarslan5" target="_blank" rel="noopener">GitHub</a>
-            <a class="text-accent hover:underline" href="https://www.linkedin.com/in/utkuarslan5" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="text-accent hover:underline" href="https://www.researchgate.net/profile/Utku-Arslan-6" target="_blank" rel="noopener">ResearchGate</a>
-            <a class="text-accent hover:underline" href="https://www.kaggle.com/utkuarslan" target="_blank" rel="noopener">Kaggle</a>
+      <section id="contact" class="section-chrome mt-16" data-reveal>
+        <div class="flex flex-col gap-10 lg:flex-row">
+            <div class="flex-1 space-y-6">
+              <div class="space-y-2">
+                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                  06 · Contact
+                </div>
+                <h2 class="text-3xl font-semibold">Let’s collaborate</h2>
+                <p class="text-black/70">Open to applied AI gigs, research collaborations, and complex-systems consulting. I prototype quickly, ship responsibly, and keep stakeholders looped in.</p>
+              </div>
+              <div class="flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-black/45">
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19v-7"></path>
+                    <path d="M12 5V2"></path>
+                    <path d="M5 12H2"></path>
+                    <path d="m16 16 6 6"></path>
+                    <path d="m2 2 6 6"></path>
+                    <path d="M19 12h3"></path>
+                    <path d="m16 8 6-6"></path>
+                    <path d="m2 22 6-6"></path>
+                  </svg>
+                  Remote · EU timezone
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 2h16"></path>
+                    <path d="M4 6h16"></path>
+                    <path d="M4 10h16"></path>
+                    <path d="M4 14h16"></path>
+                    <path d="M4 18h16"></path>
+                    <path d="M4 22h16"></path>
+                  </svg>
+                  Async + sync stacks
+                </span>
+              </div>
+              
+            <div class="flex-1 space-y-6">
+                <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2Z"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Availability</p>
+                    <h3 class="text-lg font-semibold">Consulting &amp; advisory</h3>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-black/70">Quick explorations, prototyping sprints, roadmap reviews, or fractional engineering leadership.</p>
+       
+                <div class="mt-3 flex flex-wrap items-center gap-4">
+                  <a class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white shadow hover:-translate-y-0.5 transition" href="mailto:utkuvonarslan@gmail.com">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m3 7 9 6 9-6"></path>
+                      <path d="M21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"></path>
+                    </svg>
+                    Book a Call
+                  </a>
+
+                </div>
+                <p class="mt-4 text-sm text-black/60">Response time: usually within 24 hours on weekdays.</p>
+              </div>
+            </div>
+              </div>
+              <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 5h18"></path>
+                      <path d="M7 3v2"></path>
+                      <path d="M17 3v2"></path>
+                      <path d="M5 21h14"></path>
+                      <path d="M5 7h14v14H5z"></path>
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Connect</p>
+                    <h3 class="text-lg font-semibold">Socials &amp; code</h3>
+                  </div>
+                </div>
+                <div class="mt-4 grid gap-3 text-sm font-semibold text-primary sm:grid-cols-2">
+                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://github.com/utkuarslan5" target="_blank" rel="noopener">
+                    GitHub
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17 17 7"></path>
+                      <path d="M7 7h10v10"></path>
+                    </svg>
+                  </a>
+                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.linkedin.com/in/utkuarslan5" target="_blank" rel="noopener">
+                    LinkedIn
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6Z"></path>
+                      <path d="M2 9h4v12H2z"></path>
+                      <path d="M4 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"></path>
+                    </svg>
+                  </a>
+                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.researchgate.net/profile/Utku-Arslan-6" target="_blank" rel="noopener">
+                    ResearchGate
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h7a4 4 0 0 1 0 8H8"></path>
+                      <path d="M8 12c3 0 5 2 5 5s-2 5-5 5H4V4"></path>
+                    </svg>
+                  </a>
+                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.kaggle.com/utkuarslan" target="_blank" rel="noopener">
+                    Kaggle
+                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m7 7 10 10"></path>
+                      <path d="m7 17 10-10"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -403,7 +1167,11 @@
     </footer>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
+      const yearEl = document.getElementById("year");
+      if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+      }
+
       const revealElements = document.querySelectorAll("[data-reveal]");
       const revealObserver = new IntersectionObserver(
         (entries) => {
@@ -414,9 +1182,38 @@
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.25, rootMargin: "0px 0px -40px 0px" }
       );
       revealElements.forEach((el) => revealObserver.observe(el));
+
+      const indicator = document.getElementById("scroll-indicator");
+      const updateIndicator = () => {
+        if (!indicator) return;
+        const docHeight = document.body.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? window.scrollY / docHeight : 0;
+        indicator.style.transform = `scaleX(${progress})`;
+      };
+      updateIndicator();
+      window.addEventListener("scroll", updateIndicator, { passive: true });
+      window.addEventListener("resize", updateIndicator);
+
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!prefersReducedMotion) {
+        document.querySelectorAll("[data-tilt]").forEach((card) => {
+          card.addEventListener("pointermove", (event) => {
+            if (event.pointerType && event.pointerType !== "mouse") return;
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const rotateX = ((y - rect.height / 2) / rect.height) * -10;
+            const rotateY = ((x - rect.width / 2) / rect.width) * 10;
+            card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          });
+          card.addEventListener("pointerleave", () => {
+            card.style.transform = "";
+          });
+        });
+      }
     </script>
   </body>
 </html>
