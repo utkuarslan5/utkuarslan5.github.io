@@ -28,6 +28,10 @@
         --glow: 124, 58, 237;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         min-height: 100vh;
         background: radial-gradient(circle at 10% 15%, rgba(124, 58, 237, 0.13), transparent 40%),
@@ -91,6 +95,10 @@
         box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
         padding: clamp(1.5rem, 2vw, 2.75rem);
         overflow: hidden;
+      }
+
+      .section-anchor {
+        scroll-margin-top: clamp(80px, 12vw, 120px);
       }
 
       .section-chrome::before {
@@ -238,7 +246,7 @@
     </header>
 
     <main class="relative z-10 mx-auto w-full max-w-6xl px-4 pb-32 pt-20 sm:pt-28">
-      <section id="about" class="section-chrome" data-reveal>
+      <section id="hero" class="section-chrome section-anchor" data-reveal>
         <div class="absolute -top-16 right-12 hidden h-40 w-40 rounded-full bg-gradient-to-r from-accent/30 to-pulse/30 blur-3xl sm:block"></div>
         <div class="grid gap-10 lg:grid-cols-[1.2fr,0.9fr]">
           <div class="space-y-8">
@@ -250,24 +258,23 @@
               I build <span class="bg-gradient-to-r from-accent to-indigo-500 bg-clip-text text-transparent">intelligent systems</span> that connect biology, robotics, and large-scale AI.
             </h1>
             <p class="text-lg text-black/70">From immune-cell modeling at Johnson &amp; Johnson to LLM-driven automation at Eurosis, I design end-to-end solutions that blend rigorous models with usable tools.</p>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex flex-wrap gap-3">
-                <a href="#projects" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent via-purple-500 to-sky-400 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5">
-                  <div class="flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-black/50">
+            <div class="flex flex-wrap gap-3">
+              <a href="#contact" class="book-call-btn">
                 <span class="inline-flex h-2 w-2 animate-pulse rounded-full bg-pulse shadow-[0_0_10px_rgba(0,201,167,0.8)]"></span>
-                  Book a Call
-              </div>
-                </a>
-                <a href="/Utku Arslan Resume.pdf" class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-6 py-3 text-sm font-semibold text-primary shadow-sm transition hover:border-accent">
-                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14"></path>
-                    <path d="m19 12-7 7-7-7"></path>
-                    <path d="M5 19h14"></path>
-                  </svg>
-                  Download CV
-                </a>
-              </div>
-              
+                Book a Call
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14"></path>
+                  <path d="m13 6 6 6-6 6"></path>
+                </svg>
+              </a>
+              <a href="/Utku Arslan Resume.pdf" class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-6 py-3 text-sm font-semibold text-primary shadow-sm transition hover:border-accent">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14"></path>
+                  <path d="m19 12-7 7-7-7"></path>
+                  <path d="M5 19h14"></path>
+                </svg>
+                Download CV
+              </a>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
@@ -296,77 +303,132 @@
               </a>
             </div>
           </div>
-          
+          <div class="space-y-5 rounded-[28px] border border-black/10 bg-white/80 p-6 shadow-[0_15px_35px_rgba(15,23,42,0.12)]">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-black/50">Snapshot</p>
+              <span class="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_rgba(124,58,237,0.8)]"></span>
+                Active
+              </span>
+            </div>
+            <div class="space-y-3 text-sm text-black/70">
+              <div class="flex items-start gap-3">
+                <span class="mt-1 inline-block h-2 w-2 rounded-full bg-accent"></span>
+                <div>
+                  <p class="font-semibold text-primary">Data Scientist · Eurosis</p>
+                  <p>Predictive workflows and ML + LLM automation for consulting teams.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 inline-block h-2 w-2 rounded-full bg-pulse"></span>
+                <div>
+                  <p class="font-semibold text-primary">Cross-domain systems</p>
+                  <p>Ship ML for genomics, robotics, recommender systems, and dashboards.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 inline-block h-2 w-2 rounded-full bg-indigo-400"></span>
+                <div>
+                  <p class="font-semibold text-primary">EU time zone · Remote</p>
+                  <p>Available for applied AI gigs, R&amp;D sprints, and advisory.</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-black/45">
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3v18"></path>
+                  <path d="m4.5 9 7.5 7 7.5-7"></path>
+                </svg>
+                Systems · AI
+              </span>
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20v-6"></path>
+                  <path d="M18 20V10"></path>
+                  <path d="M6 20V4"></path>
+                </svg>
+                End-to-end
+              </span>
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 10h6"></path>
+                  <path d="M13 10h6"></path>
+                  <path d="M5 14h10"></path>
+                  <path d="m15 14 4 4"></path>
+                </svg>
+                Fractional leadership
+              </span>
+            </div>
+          </div>
+        </div>
       </section>
-      <section id="about" class="section-chrome mt-16" data-reveal><div class="space-y-6">
-              <div class="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
-                <span class="h-2 w-2 rounded-full bg-accent"></span>
-                01 · About
-              </div>
-               <div class="grid gap-4 text-center sm:grid-cols-3">
-                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
-                  <div class="flex flex-col items-center gap-3">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9"></circle>
-                        <path d="M12 7v5l3 2"></path>
-                      </svg>
-                    </span>
-                    <div>
-                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Years</p>
-                      <p class="text-3xl font-semibold text-primary">6+</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
-                  <div class="flex flex-col items-center gap-3">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M5 13 3 9l9-6 9 6-2 4"></path>
-                        <path d="m9 21-6-8h18l-6 8-3-4-3 4z"></path>
-                      </svg>
-                    </span>
-                    <div>
-                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Systems shipped</p>
-                      <p class="text-3xl font-semibold text-primary">20+</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
-                  <div class="flex flex-col items-center gap-3">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M18 21a6 6 0 0 0-12 0"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                        <path d="M22 21a6 6 0 0 0-4-5.65"></path>
-                        <path d="M20 8a4 4 0 0 0-3-3.87"></path>
-                        <path d="M6 15.35A6 6 0 0 0 2 21"></path>
-                        <path d="M7 4.13A4 4 0 0 0 4 8"></path>
-                      </svg>
-                    </span>
-                    <div>
-                      <p class="text-xs uppercase tracking-[0.3em] text-black/50">Teams enabled</p>
-                      <p class="text-3xl font-semibold text-primary">8</p>
-                    </div>
-                  </div>
+      <section id="about" class="section-chrome section-anchor mt-16" data-reveal>
+        <div class="space-y-6">
+          <div class="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+            <span class="h-2 w-2 rounded-full bg-accent"></span>
+            01 · About
+          </div>
+          <div class="grid gap-4 text-center sm:grid-cols-3">
+            <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+              <div class="flex flex-col items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 7v5l3 2"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.3em] text-black/50">Years</p>
+                  <p class="text-3xl font-semibold text-primary">6+</p>
                 </div>
               </div>
-              <p class="mt-2 text-sm text-black/70">I work across bioprocess modeling, genomics, robotics, climate resilience, and LLM systems. I move from first-principles models to shipped software that helps teams make better decisions.</p>
-             
-            
-              </section>
-      <section id="experience" class="section-chrome mt-16" data-reveal>
-        <div class="flex flex-col gap-8">
-            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div class="space-y-2">
-                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
-                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
-                  02 · Experience
-                  
+            </div>
+            <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+              <div class="flex flex-col items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 13 3 9l9-6 9 6-2 4"></path>
+                    <path d="m9 21-6-8h18l-6 8-3-4-3 4z"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.3em] text-black/50">Systems shipped</p>
+                  <p class="text-3xl font-semibold text-primary">20+</p>
                 </div>
-                               <p class="text-black/70">I’ve built AI teams, deployed ML infra, and translated research into production-ready systems.</p>
-
               </div>
+            </div>
+            <div class="rounded-2xl border border-black/10 bg-white/80 px-4 py-5 shadow" data-tilt>
+              <div class="flex flex-col items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 21a6 6 0 0 0-12 0"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M22 21a6 6 0 0 0-4-5.65"></path>
+                    <path d="M20 8a4 4 0 0 0-3-3.87"></path>
+                    <path d="M6 15.35A6 6 0 0 0 2 21"></path>
+                    <path d="M7 4.13A4 4 0 0 0 4 8"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.3em] text-black/50">Teams enabled</p>
+                  <p class="text-3xl font-semibold text-primary">8</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mt-2 text-sm text-black/70">I work across bioprocess modeling, genomics, robotics, climate resilience, and LLM systems. I move from first-principles models to shipped software that helps teams make better decisions.</p>
+        </div>
+      </section>
+      <section id="experience" class="section-chrome section-anchor mt-16" data-reveal>
+          <div class="flex flex-col gap-8">
+            <div class="space-y-3 text-center">
+              <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                02 · Experience
+              </div>
+              <p class="text-black/70">I’ve built AI teams, deployed ML infra, and translated research into production-ready systems.</p>
+            </div>
 
             <div class="space-y-6">
               <article class="group rounded-[30px] border border-black/10 bg-white/90 p-6 shadow-[0_18px_35px_rgba(15,23,42,0.1)] transition" data-tilt>
@@ -516,7 +578,7 @@
         </div>
       </section>
 
-      <section id="projects" class="section-chrome mt-16" data-reveal>
+      <section id="projects" class="section-chrome section-anchor mt-16" data-reveal>
         <div class="space-y-10">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div class="space-y-2">
@@ -738,7 +800,7 @@
         </div>
       </section>
 
-      <section id="research" class="section-chrome mt-16" data-reveal>
+      <section id="research" class="section-chrome section-anchor mt-16" data-reveal>
         <div class="grid gap-10 lg:grid-cols-[1.05fr_1.25fr]">
             <div class="space-y-6">
               <div class="space-y-2">
@@ -959,7 +1021,7 @@
         </div>
       </section>
 
-      <section id="skills" class="section-chrome mt-16" data-reveal>
+      <section id="skills" class="section-chrome section-anchor mt-16" data-reveal>
         <div class="flex flex-col gap-10 lg:flex-row">
             <div class="flex-1 space-y-6">
               <div class="space-y-2">
@@ -1089,120 +1151,122 @@
         </div>
       </section>
 
-      <section id="contact" class="section-chrome mt-16" data-reveal>
+      <section id="contact" class="section-chrome section-anchor mt-16" data-reveal>
         <div class="flex flex-col gap-10 lg:flex-row">
-            <div class="flex-1 space-y-6">
-              <div class="space-y-2">
-                <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
-                  <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
-                  06 · Contact
-                </div>
-                <h2 class="text-3xl font-semibold">Let’s collaborate</h2>
-                <p class="text-black/70">Open to applied AI gigs, research collaborations, and complex-systems consulting. I prototype quickly, ship responsibly, and keep stakeholders looped in.</p>
+          <div class="flex-1 space-y-6">
+            <div class="space-y-2">
+              <div class="inline-flex items-center gap-3 rounded-full border border-black/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+                <span class="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgba(41,121,255,0.7)]"></span>
+                06 · Contact
               </div>
-              <div class="flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-black/45">
-                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
-                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 19v-7"></path>
-                    <path d="M12 5V2"></path>
-                    <path d="M5 12H2"></path>
-                    <path d="m16 16 6 6"></path>
-                    <path d="m2 2 6 6"></path>
-                    <path d="M19 12h3"></path>
-                    <path d="m16 8 6-6"></path>
-                    <path d="m2 22 6-6"></path>
-                  </svg>
-                  Remote · EU timezone
-                </span>
-                <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
-                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 2h16"></path>
-                    <path d="M4 6h16"></path>
-                    <path d="M4 10h16"></path>
-                    <path d="M4 14h16"></path>
-                    <path d="M4 18h16"></path>
-                    <path d="M4 22h16"></path>
-                  </svg>
-                  Async + sync stacks
-                </span>
-              </div>
-              
-            <div class="flex-1 space-y-6">
-                <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
-                <div class="flex items-center gap-3">
-                  <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M18 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2Z"></path>
-                    </svg>
-                  </span>
-                  <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Availability</p>
-                    <h3 class="text-lg font-semibold">Consulting &amp; advisory</h3>
-                  </div>
-                </div>
-                <p class="mt-3 text-sm text-black/70">Quick explorations, prototyping sprints, roadmap reviews, or fractional engineering leadership.</p>
-       
-                <div class="mt-3 flex flex-wrap items-center gap-4">
-                  <a class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white shadow hover:-translate-y-0.5 transition" href="mailto:utkuvonarslan@gmail.com">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m3 7 9 6 9-6"></path>
-                      <path d="M21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"></path>
-                    </svg>
-                    Book a Call
-                  </a>
-
-                </div>
-                <p class="mt-4 text-sm text-black/60">Response time: usually within 24 hours on weekdays.</p>
-              </div>
+              <h2 class="text-3xl font-semibold">Let’s collaborate</h2>
+              <p class="text-black/70">Open to applied AI gigs, research collaborations, and complex-systems consulting. I prototype quickly, ship responsibly, and keep stakeholders looped in.</p>
             </div>
+            <div class="flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-black/45">
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 19v-7"></path>
+                  <path d="M12 5V2"></path>
+                  <path d="M5 12H2"></path>
+                  <path d="m16 16 6 6"></path>
+                  <path d="m2 2 6 6"></path>
+                  <path d="M19 12h3"></path>
+                  <path d="m16 8 6-6"></path>
+                  <path d="m2 22 6-6"></path>
+                </svg>
+                Remote · EU timezone
+              </span>
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2">
+                <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 2h16"></path>
+                  <path d="M4 6h16"></path>
+                  <path d="M4 10h16"></path>
+                  <path d="M4 14h16"></path>
+                  <path d="M4 18h16"></path>
+                  <path d="M4 22h16"></path>
+                </svg>
+                Async + sync stacks
+              </span>
+            </div>
+          </div>
+          <div class="flex-1 space-y-6">
+            <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+              <div class="flex items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 2H6a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2Z"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.2em] text-black/50">Availability</p>
+                  <h3 class="text-lg font-semibold">Consulting &amp; advisory</h3>
+                </div>
               </div>
-              <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
-                <div class="flex items-center gap-3">
-                  <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M3 5h18"></path>
-                      <path d="M7 3v2"></path>
-                      <path d="M17 3v2"></path>
-                      <path d="M5 21h14"></path>
-                      <path d="M5 7h14v14H5z"></path>
-                    </svg>
-                  </span>
-                  <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-black/50">Connect</p>
-                    <h3 class="text-lg font-semibold">Socials &amp; code</h3>
-                  </div>
+              <p class="mt-3 text-sm text-black/70">Quick explorations, prototyping sprints, roadmap reviews, or fractional engineering leadership.</p>
+              <div class="mt-3 flex flex-wrap items-center gap-3">
+                <a class="book-call-btn" href="mailto:utkuvonarslan@gmail.com">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m3 7 9 6 9-6"></path>
+                    <path d="M21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"></path>
+                  </svg>
+                  Book a Call
+                </a>
+                <a class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-5 py-2 text-sm font-semibold text-primary shadow-sm transition hover:border-accent" href="#projects">
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                  View work
+                </a>
+              </div>
+              <p class="mt-4 text-sm text-black/60">Response time: usually within 24 hours on weekdays.</p>
+            </div>
+            <div class="rounded-2xl border border-black/10 bg-white/90 p-5 shadow" data-tilt>
+              <div class="flex items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 5h18"></path>
+                    <path d="M7 3v2"></path>
+                    <path d="M17 3v2"></path>
+                    <path d="M5 21h14"></path>
+                    <path d="M5 7h14v14H5z"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.2em] text-black/50">Connect</p>
+                  <h3 class="text-lg font-semibold">Socials &amp; code</h3>
                 </div>
-                <div class="mt-4 grid gap-3 text-sm font-semibold text-primary sm:grid-cols-2">
-                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://github.com/utkuarslan5" target="_blank" rel="noopener">
-                    GitHub
-                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M7 17 17 7"></path>
-                      <path d="M7 7h10v10"></path>
-                    </svg>
-                  </a>
-                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.linkedin.com/in/utkuarslan5" target="_blank" rel="noopener">
-                    LinkedIn
-                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6Z"></path>
-                      <path d="M2 9h4v12H2z"></path>
-                      <path d="M4 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"></path>
-                    </svg>
-                  </a>
-                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.researchgate.net/profile/Utku-Arslan-6" target="_blank" rel="noopener">
-                    ResearchGate
-                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M4 4h7a4 4 0 0 1 0 8H8"></path>
-                      <path d="M8 12c3 0 5 2 5 5s-2 5-5 5H4V4"></path>
-                    </svg>
-                  </a>
-                  <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.kaggle.com/utkuarslan" target="_blank" rel="noopener">
-                    Kaggle
-                    <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m7 7 10 10"></path>
-                      <path d="m7 17 10-10"></path>
-                    </svg>
-                  </a>
-                </div>
+              </div>
+              <div class="mt-4 grid gap-3 text-sm font-semibold text-primary sm:grid-cols-2">
+                <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://github.com/utkuarslan5" target="_blank" rel="noopener">
+                  GitHub
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17 17 7"></path>
+                    <path d="M7 7h10v10"></path>
+                  </svg>
+                </a>
+                <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.linkedin.com/in/utkuarslan5" target="_blank" rel="noopener">
+                  LinkedIn
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6Z"></path>
+                    <path d="M2 9h4v12H2z"></path>
+                    <path d="M4 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"></path>
+                  </svg>
+                </a>
+                <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.researchgate.net/profile/Utku-Arslan-6" target="_blank" rel="noopener">
+                  ResearchGate
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h7a4 4 0 0 1 0 8H8"></path>
+                    <path d="M8 12c3 0 5 2 5 5s-2 5-5 5H4V4"></path>
+                  </svg>
+                </a>
+                <a class="inline-flex items-center justify-between rounded-xl border border-black/10 bg-secondary/60 px-4 py-3 hover:border-accent" href="https://www.kaggle.com/utkuarslan" target="_blank" rel="noopener">
+                  Kaggle
+                  <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m7 7 10 10"></path>
+                    <path d="m7 17 10-10"></path>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
