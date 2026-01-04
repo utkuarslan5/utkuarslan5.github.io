@@ -1,0 +1,191 @@
+@import './tailwind.css';
+
+:root {
+  --grid-color: rgba(11, 16, 38, 0.07);
+  --glow: 124, 58, 237;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 15% 20%, rgba(30, 58, 138, 0.1), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.1), transparent 45%),
+    #f6f8fb;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' fill-opacity='0.16'%3E%3Cpath d='M2 2h2v2H2z' fill='%230b1026'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.35;
+  z-index: 0;
+  mix-blend-mode: multiply;
+}
+
+.hyper-grid {
+  position: fixed;
+  inset: -200px;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(0deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 180px 180px;
+  z-index: 0;
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.45), transparent 70%);
+}
+
+.plasma {
+  position: fixed;
+  width: clamp(16rem, 28vw, 28rem);
+  height: clamp(16rem, 28vw, 28rem);
+  filter: blur(40px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 999px;
+  animation: drift 28s ease-in-out infinite;
+}
+
+.plasma--one {
+  top: -6rem;
+  left: -5rem;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.5), transparent 65%);
+}
+
+.plasma--two {
+  right: -8rem;
+  bottom: 15%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.45), transparent 65%);
+  animation-duration: 32s;
+}
+
+.section-chrome {
+  position: relative;
+  border-radius: 32px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(241, 245, 249, 0.92));
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+  padding: clamp(1.5rem, 2vw, 2.5rem);
+  overflow: hidden;
+}
+
+.section-anchor {
+  scroll-margin-top: clamp(80px, 12vw, 120px);
+}
+
+.section-chrome::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 30px;
+  border: 1px solid rgba(124, 58, 237, 0.08);
+  pointer-events: none;
+}
+
+.section-chrome::after {
+  content: "";
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(var(--glow), 0.15), transparent 60%);
+  filter: blur(10px);
+  transform: translate(40%, 40%);
+  pointer-events: none;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+[data-reveal].visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+[data-tilt] {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+#scroll-indicator {
+  transition: transform 0.2s ease-out;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -5%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.book-call-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f8fbff;
+  background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+  box-shadow: 0 18px 40px rgba(30, 58, 138, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.35);
+  border: none;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.book-call-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: currentColor;
+  fill: none;
+}
+
+.book-call-btn::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35), rgba(14, 165, 233, 0.28));
+  filter: blur(8px);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.book-call-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 24px 55px rgba(30, 58, 138, 0.4), 0 0 16px rgba(14, 165, 233, 0.25);
+}
+
+.book-call-btn:focus-visible {
+  outline: 2px solid #eff4ff;
+  outline-offset: 5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plasma {
+    animation: none;
+  }
+  [data-reveal] {
+    transition-duration: 0.01s;
+  }
+}
+
