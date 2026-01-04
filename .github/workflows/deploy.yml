@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
+# Trigger deployment on push to main branch or manual workflow dispatch
 on:
   push:
     branches:
-      - main # Change to 'master' if that's your default branch
+      - main
   workflow_dispatch:
 
 permissions:
