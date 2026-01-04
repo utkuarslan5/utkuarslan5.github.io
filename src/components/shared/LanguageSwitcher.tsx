@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
@@ -6,29 +7,33 @@ export function LanguageSwitcher() {
 
   return (
     <div className="language-switcher flex items-center gap-1 border-l border-border pl-8">
-      <button
+      <motion.button
         onClick={() => setLanguage('en')}
         className={cn(
-          'px-2 py-1 text-xs font-medium uppercase tracking-wide transition hover:text-highlight',
+          'px-2 py-1 text-xs font-medium uppercase tracking-wide',
           language === 'en' && 'text-highlight font-semibold'
         )}
         aria-label="Switch to English"
         aria-pressed={language === 'en'}
+        whileHover={{ opacity: 0.8 }}
+        transition={{ duration: 0.2 }}
       >
         EN
-      </button>
+      </motion.button>
       <span className="text-muted">|</span>
-      <button
+      <motion.button
         onClick={() => setLanguage('tr')}
         className={cn(
-          'px-2 py-1 text-xs font-medium uppercase tracking-wide transition hover:text-highlight',
+          'px-2 py-1 text-xs font-medium uppercase tracking-wide',
           language === 'tr' && 'text-highlight font-semibold'
         )}
         aria-label="Switch to Turkish"
         aria-pressed={language === 'tr'}
+        whileHover={{ opacity: 0.8 }}
+        transition={{ duration: 0.2 }}
       >
         TR
-      </button>
+      </motion.button>
     </div>
   );
 }

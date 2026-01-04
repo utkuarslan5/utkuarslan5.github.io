@@ -1,13 +1,19 @@
-import { useScrollIndicator } from '@/hooks/useScrollIndicator';
+import { useScroll, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export function ScrollIndicator() {
-  const indicatorRef = useScrollIndicator();
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   return (
-    <div
+    <motion.div
       id="scroll-indicator"
-      ref={indicatorRef}
-      className="fixed left-0 top-0 z-50 h-0.5 w-full origin-left scale-x-0 bg-primary"
+      style={{ scaleX }}
+      className="fixed left-0 top-0 z-50 h-0.5 w-full origin-left bg-primary"
     />
   );
 }

@@ -3,6 +3,7 @@ import { useI18n } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { BaseSection } from '@/components/shared/BaseSection';
 import { Mail, Download } from 'lucide-react';
+import { CONTACT } from '@/constants';
 
 export const Hero = memo(function Hero() {
   const { t } = useI18n();
@@ -26,14 +27,14 @@ export const Hero = memo(function Hero() {
             {t('heroDescription')}
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button asChild className="book-call-btn">
-              <a href="mailto:utkuvonarslan@gmail.com" aria-label={t('emailMe')}>
+            <Button asChild variant="highlight">
+              <a href={`mailto:${CONTACT.EMAIL}`} aria-label={t('emailMe')}>
                 <Mail className="w-4 h-4" aria-hidden="true" />
                 <span>{t('emailMe')}</span>
               </a>
             </Button>
             <Button asChild variant="outline">
-              <a href="/Utku Arslan Resume.pdf" aria-label={t('downloadCV')} target="_blank" rel="noopener">
+              <a href={CONTACT.RESUME_PATH} aria-label={t('downloadCV')} target="_blank" rel="noopener">
                 <Download className="w-4 h-4" aria-hidden="true" />
                 <span>{t('downloadCV')}</span>
               </a>

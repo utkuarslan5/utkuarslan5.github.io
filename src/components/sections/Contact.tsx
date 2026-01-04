@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { SectionHeader } from '@/components/shared/SectionHeader';
 import { BaseSection } from '@/components/shared/BaseSection';
 import { Mail, ExternalLink } from 'lucide-react';
-import { SECTION_IDS, SECTION_NUMBERS } from '@/constants';
+import { SECTION_IDS, SECTION_NUMBERS, CONTACT } from '@/constants';
 
 export const Contact = memo(function Contact() {
   const { t } = useI18n();
@@ -42,13 +42,13 @@ export const Contact = memo(function Contact() {
               <p className="text-body text-muted">{t('consultingDescription')}</p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild>
-                  <a href="mailto:utkuvonarslan@gmail.com">
+                  <a href={`mailto:${CONTACT.EMAIL}`}>
                     <Mail className="w-4 h-4" />
                     {t('emailMe')}
                   </a>
                 </Button>
                 <Button asChild variant="outline">
-                  <a href="https://www.linkedin.com/in/utkuarslan5" target="_blank" rel="noopener">
+                  <a href={CONTACT.LINKEDIN_URL} target="_blank" rel="noopener">
                     <ExternalLink className="w-4 h-4" />
                     {t('connectLinkedIn')}
                   </a>

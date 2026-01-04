@@ -118,10 +118,10 @@ export default {
   		},
   		borderRadius: {
   			none: '0',
-  			sm: '2px',
-  			DEFAULT: '2px',
-  			md: '4px',
-  			lg: '6px'
+  			sm: '0',        // Override to 0 for Swiss precision
+  			DEFAULT: '0',   // No rounding by default
+  			md: '2px',      // Subtle if needed
+  			lg: '4px',      // Maximum allowed
   		},
   		boxShadow: {
   			sm: '0 1px 2px rgba(0, 0, 0, 0.05)',

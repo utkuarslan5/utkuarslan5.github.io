@@ -22,7 +22,7 @@ export function SectionHeader({
   return (
     <div className={className}>
       <div className="flex items-baseline gap-4">
-        <span className="font-mono text-small text-muted">0{number}</span>
+        <span className="font-mono text-small text-muted">{number.padStart(2, '0')}</span>
         <h2 className="text-h2 font-semibold text-primary">{t(titleKey)}</h2>
       </div>
       {subtitleKey && (

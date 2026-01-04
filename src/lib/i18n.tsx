@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { translations as translationsData } from '@/data/translations';
 
 /**
  * Supported languages in the application
@@ -13,6 +14,14 @@ export interface Translations {
   [key: string]: string | Translations;
 }
 
+const translations = translationsData as Record<Language, Record<string, string>>;
+
+/**
+ * Type-safe translation key
+ * Automatically inferred from the English translations
+ */
+export type TranslationKey = keyof typeof translations.en;
+
 /**
  * Internationalization context type
  * Provides language state and translation function
@@ -23,12 +32,8 @@ export interface I18nContextType {
   /** Function to change the active language */
   setLanguage: (lang: Language) => void;
   /** Translation function that returns the translated string for a given key */
-  t: (key: string) => string;
+  t: (key: TranslationKey) => string;
 }
-
-import { translations as translationsData } from '@/data/translations';
-
-const translations = translationsData as Record<Language, Record<string, string>>;
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
@@ -71,7 +76,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
    * @param key - Translation key to look up
    * @returns Translated string or the key if translation not found
    */
-  const t = (key: string): string => {
+  const t = (key: TranslationKey): string => {
     return translations[language]?.[key] || translations.en?.[key] || key;
   };
 

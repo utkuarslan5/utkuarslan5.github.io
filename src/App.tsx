@@ -1,9 +1,10 @@
-import { Suspense, lazy } from 'react';
+import { lazy } from 'react';
 import { I18nProvider } from './lib/i18n';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { ScrollIndicator } from './components/shared/ScrollIndicator';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { SectionWrapper } from './components/shared/SectionWrapper';
 
 // Lazy load sections for better performance
 const Hero = lazy(() => import('./components/sections/Hero').then(m => ({ default: m.Hero })));
@@ -33,41 +34,27 @@ function App() {
         <ScrollIndicator />
         <Header />
         <main id="main-content" className="relative z-10 mx-auto w-full max-w-7xl px-8 pb-32 pt-32" role="main">
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Hero />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <About />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Experience />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Projects />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Research />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Skills />
-            </Suspense>
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <Contact />
-            </Suspense>
-          </ErrorBoundary>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Hero />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <About />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Experience />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Projects />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Research />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Skills />
+          </SectionWrapper>
+          <SectionWrapper fallback={<SectionLoader />}>
+            <Contact />
+          </SectionWrapper>
         </main>
         <Footer />
       </I18nProvider>

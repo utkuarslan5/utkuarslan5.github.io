@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { motion } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 import {
@@ -28,21 +29,23 @@ export const Header = memo(function Header() {
       <header className="sticky top-0 z-40 border-b border-border bg-secondary/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-4">
           <div>
-            <p className="text-sm font-semibold">UTKU ARSLAN</p>
-            <p className="text-xs text-muted">SYSTEMS · AI</p>
+            <p className="text-small font-semibold tracking-wide">UTKU ARSLAN</p>
+            <p className="text-micro text-muted uppercase tracking-widest">SYSTEMS · AI</p>
           </div>
-          <nav className="flex gap-8 text-sm font-medium text-primary" aria-label="Primary navigation">
+          <nav className="flex gap-8 text-small font-medium text-primary" aria-label="Primary navigation">
             <TooltipProvider>
               {navItems.map((item) => (
                 <Tooltip key={item.id}>
                   <TooltipTrigger asChild>
-                    <a
+                    <motion.a
                       href={`#${item.id}`}
-                      className="transition hover:text-highlight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-highlight focus-visible:rounded"
+                      className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-highlight focus-visible:rounded"
                       aria-label={`Navigate to ${t(item.key)} section`}
+                      whileHover={{ opacity: 0.7 }}
+                      transition={{ duration: 0.2 }}
                     >
                       {t(item.key)}
-                    </a>
+                    </motion.a>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>{t(item.key)}</p>

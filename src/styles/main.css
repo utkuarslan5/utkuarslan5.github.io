@@ -29,39 +29,6 @@ body {
   margin-top: 0;
 }
 
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
-}
-
-[data-reveal].visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-#scroll-indicator {
-  transition: transform 0.2s ease-out;
-}
-
-.book-call-btn {
-  @apply inline-flex items-center gap-2 px-6 py-3 border border-primary bg-primary text-secondary text-sm font-semibold no-underline transition;
-}
-
-.book-call-btn:hover {
-  @apply bg-secondary text-primary;
-}
-
-.book-call-btn svg {
-  @apply w-4 h-4;
-  stroke: currentColor;
-  fill: none;
-}
-
-.book-call-btn:focus-visible {
-  outline: 2px solid #3B82F6;
-  outline-offset: 2px;
-}
 
 .language-switcher button.active {
   font-weight: 600;
@@ -97,9 +64,4 @@ body {
   white-space: normal;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    transition-duration: 0.01s;
-  }
-}
 

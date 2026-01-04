@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { motion } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import {
   Card,
@@ -9,8 +10,31 @@ import {
 } from '@/components/ui/card';
 import { SectionHeader } from '@/components/shared/SectionHeader';
 import { BaseSection } from '@/components/shared/BaseSection';
+import { CollapsibleSection } from '@/components/shared/CollapsibleSection';
 import { research } from '@/data/research';
 import { SECTION_IDS, SECTION_NUMBERS } from '@/constants';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  },
+};
 
 export const Research = memo(function Research() {
   const { t } = useI18n();
@@ -26,9 +50,16 @@ export const Research = memo(function Research() {
           descriptionKey="researchDescription"
           className="space-y-2"
         />
-        <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div
+          className="grid gap-6 lg:grid-cols-2"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+        >
           {primary.map((item) => (
-            <Card key={item.id}>
+            <motion.div key={item.id} variants={itemVariants}>
+              <Card>
               <CardHeader>
                 <div>
                   <CardTitle className="text-h3 font-semibold text-primary">
@@ -55,43 +86,39 @@ export const Research = memo(function Research() {
                 )}
               </CardContent>
             </Card>
+            </motion.div>
           ))}
-        </div>
-        {secondary.length > 0 && (
-          <details className="border border-border bg-white p-4 shadow-sm">
-            <summary className="cursor-pointer text-small font-semibold text-primary">
-              {t('morePublications')}
-            </summary>
-            <p className="text-small text-muted mt-2">{t('morePublicationsSummary')}</p>
-            <div className="mt-4 space-y-3">
-              {secondary.map((item) => (
-                <div key={item.id} className="border-t border-border pt-3 first:border-t-0 first:pt-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                    <CardTitle className="text-body font-semibold text-primary">
-                      {t(item.title)}
-                    </CardTitle>
-                    {item.date && (
-                      <CardDescription className="text-small text-muted">
-                        {item.date}
-                      </CardDescription>
-                    )}
-                  </div>
-                  <p className="text-small text-muted mt-1">{t(item.description)}</p>
-                  {item.url && (
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener"
-                      className="inline-flex items-center gap-2 text-accent hover:underline text-small"
-                    >
-                      {t('viewPublication')}
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </details>
-        )}
+        </motion.div>
+        <CollapsibleSection
+          summaryKey="morePublications"
+          summaryDescriptionKey="morePublicationsSummary"
+          items={secondary}
+          renderItem={(item, index) => (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <CardTitle className="text-body font-semibold text-primary">
+                  {t(item.title)}
+                </CardTitle>
+                {item.date && (
+                  <CardDescription className="text-small text-muted">
+                    {item.date}
+                  </CardDescription>
+                )}
+              </div>
+              <p className="text-small text-muted mt-1">{t(item.description)}</p>
+              {item.url && (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 text-accent hover:underline text-small"
+                >
+                  {t('viewPublication')}
+                </a>
+              )}
+            </>
+          )}
+        />
       </div>
     </BaseSection>
   );

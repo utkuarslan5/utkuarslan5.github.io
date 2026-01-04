@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useRevealObserver } from '@/hooks/useRevealObserver';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { SECTION_CLASSES } from '@/constants';
 
@@ -12,7 +12,7 @@ interface BaseSectionProps {
 
 /**
  * Base section component that provides consistent styling and reveal animation.
- * Wraps content in a section with standard classes and Intersection Observer.
+ * Wraps content in a section with standard classes and Framer Motion animations.
  * 
  * @param id - Unique identifier for the section (used for navigation)
  * @param children - Content to render inside the section
@@ -32,13 +32,24 @@ export function BaseSection({
   className = '',
   enableReveal = true,
 }: BaseSectionProps) {
-  const revealRef = useRevealObserver<HTMLElement>();
+  if (enableReveal) {
+    return (
+      <motion.section
+        id={id}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+        transition={{ duration: 0.65, ease: 'easeOut' }}
+        className={cn(SECTION_CLASSES.BASE, className)}
+      >
+        {children}
+      </motion.section>
+    );
+  }
 
   return (
     <section
       id={id}
-      ref={enableReveal ? revealRef : undefined}
-      data-reveal={enableReveal ? '' : undefined}
       className={cn(SECTION_CLASSES.BASE, className)}
     >
       {children}

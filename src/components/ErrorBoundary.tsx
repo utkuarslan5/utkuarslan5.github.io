@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   children: ReactNode;
@@ -43,12 +44,9 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-body text-muted mb-6">
               We're sorry, but something unexpected happened. Please try refreshing the page.
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
-            >
+            <Button onClick={() => window.location.reload()}>
               Refresh Page
-            </button>
+            </Button>
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
                 <summary className="cursor-pointer text-small text-muted mb-2">

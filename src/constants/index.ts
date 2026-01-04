@@ -21,12 +21,13 @@ export const SECTION_NUMBERS = {
   CONTACT: '06',
 } as const;
 
-export const REVEAL_OBSERVER_CONFIG = {
-  threshold: 0.25,
-  rootMargin: '0px 0px -40px 0px',
-} as const;
-
 export const SECTION_CLASSES = {
   BASE: 'section-chrome section-anchor section-spacing',
+} as const;
+
+export const CONTACT = {
+  EMAIL: 'utkuvonarslan@gmail.com',
+  RESUME_PATH: '/Utku Arslan Resume.pdf',
+  LINKEDIN_URL: 'https://www.linkedin.com/in/utkuarslan5',
 } as const;
 

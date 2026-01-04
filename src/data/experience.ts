@@ -6,7 +6,6 @@ export interface ExperienceItem {
   period: string;
   location: string;
   items: string[];
-  tags: string[];
   logo?: string;
   logoAlt?: string;
   logoUrl?: string;
@@ -21,7 +20,6 @@ export const experience: ExperienceItem[] = [
     period: 'Sep 2024 – Present',
     location: 'Remote',
     items: ['experienceItem1', 'experienceItem2', 'experienceItem3'],
-    tags: [],
   },
   {
     id: 'poiesy-2023',
@@ -31,7 +29,6 @@ export const experience: ExperienceItem[] = [
     period: 'Oct 2023 – Jan 2024',
     location: 'Netherlands · Hybrid',
     items: ['expPoiesyItem1', 'expPoiesyItem2', 'expPoiesyItem3'],
-    tags: ['Genomics', 'Survival modeling', 'Biomarkers'],
   },
   {
     id: 'jnj-2022',
@@ -41,7 +38,6 @@ export const experience: ExperienceItem[] = [
     period: 'Aug 2022 – Jul 2023',
     location: 'Leiden, NL',
     items: ['expJNJItem1', 'expJNJItem2', 'expJNJItem3'],
-    tags: ['RNNs', 'Latent variables', 'GMP reporting'],
   },
   {
     id: 'swarmlab-2021',
@@ -51,7 +47,6 @@ export const experience: ExperienceItem[] = [
     period: 'Aug 2021 – Mar 2022',
     location: 'Maastricht, NL',
     items: ['expSwarmLabItem1', 'expSwarmLabItem2', 'expSwarmLabItem3'],
-    tags: ['Gesture control', 'Multi-agent', 'CV'],
   },
   {
     id: 'unumerit-2021',
@@ -61,7 +56,6 @@ export const experience: ExperienceItem[] = [
     period: 'Sep 2021 – Feb 2022',
     location: 'Maastricht, NL',
     items: ['expUNUMERITItem1', 'expUNUMERITItem2', 'expUNUMERITItem3'],
-    tags: ['ArcGIS', 'Platform design', 'Vendor strategy'],
   },
 ];
 
