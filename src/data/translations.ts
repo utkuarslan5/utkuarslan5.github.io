@@ -211,7 +211,7 @@ export const translations = {
     expEurosisTitle: "Veri Bilimci · Eurosis Consulting",
     expEurosisDesc: "Danışmanlık iş akışlarıyla entegre olan tahmine dayalı ML + LLM otomasyon sistemleri geliştiriyorum. Uçtan uca sahipleniyorum: veri pipeline'ları, model geliştirme, değerlendirme ve üretim dağıtımı.",
     expPoiesyCategory: "Biyoteknoloji",
-    expPoiesyTitle: "AI Başkanı · Poiesy",
+    expPoiesyTitle: "AI Ekip Lideri · Poiesy",
     expPoiesyDesc: "Kemik iliği nakli sonuçları için hızlı genomik modelleme.",
     expPoiesyItem1: "İlk hafta pipeline'da ~%83 doğruluk elde etti.",
     expPoiesyItem2: "Yüksek boyutlu biyobelirteçleri ve doğrulama sprintlerini yönetti.",
